@@ -18,7 +18,8 @@ else:
     tasks = [
         {"id": 1, "Title": "The Dark Knight"},
         {"id": 2, "Title": "The Watchmen"},
-        {"id": 3, "Title": "The Vendetta"}
+        {"id": 3, "Title": "The Vendetta"},
+        {"id": 4, "Title": "Spider man"}
     ]
 
     
