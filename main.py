@@ -1,15 +1,17 @@
 from fastapi import FastAPI, HTTPException
 from fastapi.responses import JSONResponse
 from pydantic import BaseModel
+from typing import Optional
 import json
 
 app = FastAPI()
 
 # Item model
 class Item(BaseModel):
+    id: Optional[int]
     Quote: str
     Author: str
-
+     
 # Function to read data from the file
 def read_data_from_file():
     try:
@@ -42,12 +44,30 @@ async def get_request():
 async def create_request(item: Item):
     print("Received item data:")
     print(item.json())
-    
     data = read_data_from_file()
     data.append(item.dict())
     write_data_to_file(data)
-    
     return item
+# PUT method to update your exciting data
+@app.put("/put_request/{item_id}")
+async def put_request(item_id: int, item: Item):
+    print("Updated item data:")
+    print(item.dict())  
+    data = read_data_from_file()
+    data[item_id] = item.dict()  
+    write_data_to_file(data)
+    return item
+# Delete method 
+@app.delete("/delete_request/{item_id}")
+async def delete_request(item_id: int):
+    data = read_data_from_file()
+    for item in data:
+        if item.get("id") == item_id:
+            data.remove(item)
+            write_data_to_file(data)
+            return {"message": f"Item with ID {item_id} deleted successfully"}
+    raise HTTPException(status_code=404, detail=f"Item with ID {item_id} not found")
+
 
 if __name__ == "__main__":
     import uvicorn
