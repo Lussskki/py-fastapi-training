@@ -1,4 +1,5 @@
 if __name__ == "__main__":
+    import os
     import asyncio
     from dotenv import load_dotenv
     from postgre import connect_to_database
@@ -7,9 +8,9 @@ if __name__ == "__main__":
         load_dotenv()  
         pool = await connect_to_database()  
         async with pool.acquire() as connection:
-            result = await connection.fetch("SELECT * FROM table1;")
-        filtered_result = [record for record in result if record['names'] is not None]
+            result = await connection.fetch(f"SELECT * FROM {os.getenv('DB_TABLE')};")
+        filtered_result = [record for record in result if record[f"{os.getenv('DB_COLUMN')}"] is not None]
         for record in filtered_result:
-            print(record['names'])  
+            print(record[f"{os.getenv('DB_COLUMN1')}"])  
 
     asyncio.run(main())
