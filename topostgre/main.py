@@ -1,32 +1,15 @@
-import os
-from dotenv import load_dotenv
-import asyncpg
-import asyncio
-
-
-async def connect_to_database():
-    return await asyncpg.create_pool(
-        user = os.getenv("DB_USER"),
-        password = os.getenv("DB_PASSWORD"),
-        database = os.getenv("DB_DATABASE"),
-        host="localhost",
-        port="5432"
-    )
-
-async def execute_query(query, *args):
-    pool = await connect_to_database()  
-    async with pool.acquire() as connection:
-        print("Conected")
-        return await connection.execute(query, *args)
-
-async def main():
-    result = await execute_query("SELECT * FROM table1;")
-    print(result)
-
 if __name__ == "__main__":
-    load_dotenv()
-    asyncio.run(main())
+    import asyncio
+    from dotenv import load_dotenv
+    from postgre import connect_to_database
 
-"""
-This code is for connect with Postgresql16 
-"""
+    async def main():
+        load_dotenv()  
+        pool = await connect_to_database()  
+        async with pool.acquire() as connection:
+            result = await connection.fetch("SELECT * FROM table1;")
+        filtered_result = [record for record in result if record['names'] is not None]
+        for record in filtered_result:
+            print(record['names'])  
+
+    asyncio.run(main())
