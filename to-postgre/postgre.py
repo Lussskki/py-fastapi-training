@@ -1,8 +1,6 @@
 import os
 import asyncpg
 
-
-
 async def connect_to_database():
     return await asyncpg.create_pool(
         user = os.getenv("DB_USER"),
