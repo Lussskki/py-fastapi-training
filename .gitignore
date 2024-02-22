@@ -1,3 +1,4 @@
 __pycache__
+.env
 to-json/.vscode
-to-postgre/.env
+py-fastapi-test/.pytest_cache
